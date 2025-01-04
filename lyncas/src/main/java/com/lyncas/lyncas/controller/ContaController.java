@@ -1,6 +1,10 @@
 package com.lyncas.lyncas.controller;
 
 import jakarta.validation.Valid;
+
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -11,9 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lyncas.lyncas.entity.Conta;
+import java.math.BigDecimal;
 import com.lyncas.lyncas.service.ContaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,13 +52,12 @@ public class ContaController {
         return ResponseEntity.ok(contas);
     }
     
-    
-    @GetMapping("/listaro")
-    @Operation(summary = "Listar todas as contas")
-    @ApiResponse(responseCode = "200", description = "Contas listadas com sucesso")
-    public ResponseEntity<Page<Conta>> listaro(Pageable pageable) {
-        Page<Conta> contas = contaService.listarContas(pageable);
-        return ResponseEntity.ok(contas);
+    @PutMapping("/{id}")
+    @Operation(summary = "Atualiza uma conta")
+    @ApiResponse(responseCode = "200", description = "Conta atualizada com sucesso")
+    public ResponseEntity<Conta> atualizarConta(@PathVariable Long id, @RequestBody @Valid Conta contaAtualizada) {
+        Conta conta = contaService.atualizarConta(id, contaAtualizada);
+        return ResponseEntity.ok(conta);
     }
 
     @PutMapping("/{id}/pagar")
@@ -60,5 +66,41 @@ public class ContaController {
     public ResponseEntity<Conta> pagar(@PathVariable Long id) {
         Conta contaPaga = contaService.pagarConta(id);
         return ResponseEntity.ok(contaPaga);
+    }
+    
+    @GetMapping("/filtro")
+    @Operation(summary = "Lista contas com filtro de data de vencimento e descrição")
+    @ApiResponse(responseCode = "200", description = "Lista de contas retornada com sucesso")
+    public ResponseEntity<List<Conta>> listarContasComFiltro(
+            @RequestParam(required = false) LocalDate dataVencimento,
+            @RequestParam(required = false) String descricao) {
+        List<Conta> contas = contaService.listarContasComFiltro(dataVencimento, descricao);
+        return ResponseEntity.ok(contas);
+    }
+    
+    @GetMapping("/{id}")
+    @Operation(summary = "Obtém uma conta pelo ID")
+    @ApiResponse(responseCode = "200", description = "Conta encontrada com sucesso")
+    public ResponseEntity<Conta> obterContaPorId(@PathVariable Long id) {
+        Conta conta = contaService.obterContaPorId(id);
+        return ResponseEntity.ok(conta);
+    }
+    
+    @PostMapping("/importar")
+    @Operation(summary = "Importa contas a pagar a partir de um arquivo CSV")
+    @ApiResponse(responseCode = "200", description = "Contas importadas com sucesso")
+    public ResponseEntity<String> importarContas(@RequestParam("file") MultipartFile file) {
+        contaService.importarContas(file);
+        return ResponseEntity.ok("Importação realizada com sucesso");
+    }
+    
+    @GetMapping("/total-pago")
+    @Operation(summary = "Obtém o valor total pago por período")
+    @ApiResponse(responseCode = "200", description = "Valor total pago retornado com sucesso")
+    public ResponseEntity<BigDecimal> obterTotalPagoPorPeriodo(
+            @RequestParam LocalDate dataInicio,
+            @RequestParam LocalDate dataFim) {
+        BigDecimal totalPago = contaService.obterTotalPagoPorPeriodo(dataInicio, dataFim);
+        return ResponseEntity.ok(totalPago);
     }
 }
