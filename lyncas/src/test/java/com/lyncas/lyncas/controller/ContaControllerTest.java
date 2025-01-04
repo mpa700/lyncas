@@ -42,7 +42,7 @@ class ContaControllerTest {
         Conta conta = new Conta();
         conta.setId(1L);
         conta.setDataVencimento(LocalDate.now());
-        conta.setValor(new BigDecimal("100.00"));
+        conta.setValor(100.00);
         conta.setDescricao("Conta de teste");
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));

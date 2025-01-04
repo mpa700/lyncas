@@ -18,23 +18,40 @@ import com.lyncas.lyncas.entity.Situacao;
 import com.lyncas.lyncas.exception.ResourceNotFoundException;
 import com.lyncas.lyncas.repository.ContaRepository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+
 @Service
 public class ContaService {
     private final ContaRepository contaRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;  // Injetando o EntityManager
 
     public ContaService(ContaRepository contaRepository) {
         this.contaRepository = contaRepository;
     }
 
-    public Conta cadastrarConta(Conta conta) {
-        conta.setSituacao(Situacao.PENDENTE);
-        return contaRepository.save(conta);
+    
+    @Transactional
+    public Conta cadastrarConta(ContaDTO contaDTO) {
+    	Conta novaConta = new Conta();
+    	novaConta.setSituacao(Situacao.PENDENTE);
+    	novaConta.setDataPagamento(contaDTO.getDataPagamento());
+    	novaConta.setDataVencimento(contaDTO.getDataVencimento());
+    	novaConta.setDescricao(contaDTO.getDescricao());
+    	novaConta.setValor(contaDTO.getValor());
+    	
+    	
+        return contaRepository.save(novaConta);  
     }
 
     public Page<Conta> listarContas(Pageable pageable) {
         return contaRepository.findAll(pageable);
     }
-
+    
+    @Transactional
     public Conta pagarConta(Long id) {
         Conta conta = contaRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada"));
@@ -43,15 +60,20 @@ public class ContaService {
         return contaRepository.save(conta);
     }
     
+    @Transactional
     public Conta atualizarConta(Long id, Conta contaAtualizada) {
         Conta contaExistente = contaRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Conta não encontrada com o id: " + id));
+
+    
         contaExistente.setDataVencimento(contaAtualizada.getDataVencimento());
         contaExistente.setDataPagamento(contaAtualizada.getDataPagamento());
         contaExistente.setValor(contaAtualizada.getValor());
         contaExistente.setDescricao(contaAtualizada.getDescricao());
         contaExistente.setSituacao(contaAtualizada.getSituacao());
-        return contaRepository.save(contaExistente);
+
+    
+        return entityManager.merge(contaExistente);  // Usando merge para atualizar a entidade
     }
     
     public List<Conta> listarContasComFiltro(LocalDate dataVencimento, String descricao) {
@@ -77,6 +99,7 @@ public class ContaService {
                 .orElse(BigDecimal.ZERO);
     }
     
+    @Transactional
     public void importarContas(MultipartFile file) {
         List<Conta> contas = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
@@ -85,12 +108,13 @@ public class ContaService {
                 String[] dados = linha.split(",");
                 Conta conta = new Conta();
                 conta.setDataVencimento(LocalDate.parse(dados[0]));
-                conta.setValor(new BigDecimal(dados[1]));
+                conta.setValor(Double.parseDouble(dados[1]));
                 conta.setDescricao(dados[2]);
                 conta.setSituacao(Situacao.valueOf(dados[3].toUpperCase()));
+                // Usando o merge para garantir que a conta seja gerenciada corretamente
                 contas.add(conta);
             }
-            contaRepository.saveAll(contas);
+            contaRepository.saveAll(contas); // Salvar as contas todas de uma vez
         } catch (Exception e) {
             throw new RuntimeException("Erro ao importar contas: " + e.getMessage());
         }

@@ -1,1 +1,4 @@
-/Users/marcossantos/Downloads/lyncas/src/test/java/com/lyncas/lyncas/LyncasApplicationTests.java
+/Users/marcossantos/git/lyncas/lyncas/src/test/java/com/lyncas/lyncas/LyncasApplicationTests.java
+/Users/marcossantos/git/lyncas/lyncas/src/test/java/com/lyncas/lyncas/controller/ContaControllerTest.java
+/Users/marcossantos/git/lyncas/lyncas/src/test/java/com/lyncas/lyncas/repository/ContaRepositoryTest.java
+/Users/marcossantos/git/lyncas/lyncas/src/test/java/com/lyncas/lyncas/service/ContaServiceTest.java

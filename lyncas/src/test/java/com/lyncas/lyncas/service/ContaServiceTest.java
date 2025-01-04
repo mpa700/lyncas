@@ -11,12 +11,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-class ContaServiceTest {
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@SpringBootTest
+public class ContaServiceTest {
 
     @InjectMocks
     private ContaService contaService;
@@ -36,7 +40,7 @@ class ContaServiceTest {
         Conta conta = new Conta();
         conta.setId(id);
         conta.setDataVencimento(LocalDate.now());
-        conta.setValor(new BigDecimal("100.00"));
+        conta.setValor(100.00);
         conta.setDescricao("Conta de teste");
         conta.setSituacao(Situacao.PENDENTE);
 

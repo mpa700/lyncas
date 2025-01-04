@@ -6,7 +6,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.lyncas.lyncas.entity.Conta;
 import java.math.BigDecimal;
+
+import com.lyncas.lyncas.service.ContaDTO;
 import com.lyncas.lyncas.service.ContaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,7 +43,7 @@ public class ContaController {
     @PostMapping
     @Operation(summary = "Cadastra uma nova conta")
     @ApiResponse(responseCode = "200", description = "Conta cadastrada com sucesso")
-    public ResponseEntity<Conta> cadastrar(@RequestBody @Valid Conta conta) {
+    public ResponseEntity<Conta> cadastrar(@RequestBody @Valid ContaDTO conta) {
         Conta novaConta = contaService.cadastrarConta(conta);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaConta);
     }
@@ -47,7 +51,17 @@ public class ContaController {
     @GetMapping
     @Operation(summary = "Listar todas as contas")
     @ApiResponse(responseCode = "200", description = "Contas listadas com sucesso")
-    public ResponseEntity<Page<Conta>> listar(Pageable pageable) {
+    public ResponseEntity<Page<Conta>> listar(@RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "1") int size,
+                                               @RequestParam(required = false) String sort) {
+        // Cria o Pageable de forma personalizada
+        Pageable pageable;
+        if (sort == null || sort.isEmpty()) {
+            pageable = PageRequest.of(page, size); // Sem ordenação
+        } else {
+            pageable = PageRequest.of(page, size, Sort.by(sort)); // Ordenação com um único critério
+        }
+
         Page<Conta> contas = contaService.listarContas(pageable);
         return ResponseEntity.ok(contas);
     }

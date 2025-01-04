@@ -1,1 +1,4 @@
+com/lyncas/lyncas/controller/ContaControllerTest.class
 com/lyncas/lyncas/LyncasApplicationTests.class
+com/lyncas/lyncas/repository/ContaRepositoryTest.class
+com/lyncas/lyncas/service/ContaServiceTest.class

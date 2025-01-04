@@ -22,7 +22,7 @@ class ContaRepositoryTest {
     void deveSalvarEEncontrarConta() {
         Conta conta = new Conta();
         conta.setDataVencimento(LocalDate.now());
-        conta.setValor(new BigDecimal("100.00"));
+        conta.setValor(100.00);
         conta.setDescricao("Conta de teste");
         conta.setSituacao(Situacao.PENDENTE);
 
