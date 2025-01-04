@@ -1,0 +1,10 @@
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/LyncasApplication.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/config/OpenApiConfig.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/config/SecurityConfig.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/config/SwaggerConfig.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/controller/ContaController.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/entity/Conta.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/entity/Situacao.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/exception/ResourceNotFoundException.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/repository/ContaRepository.java
+/Users/marcossantos/Downloads/lyncas/src/main/java/com/lyncas/lyncas/service/ContaService.java
