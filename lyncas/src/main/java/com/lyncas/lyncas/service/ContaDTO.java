@@ -2,6 +2,7 @@ package com.lyncas.lyncas.service;
 
 import lombok.Data;
 import java.time.LocalDate;
+import com.lyncas.lyncas.entity.Situacao;
 
 @Data
 public class ContaDTO {  
@@ -9,5 +10,5 @@ public class ContaDTO {
     private LocalDate dataPagamento;
     private Double valor;
     private String descricao;
-    private String situacao;
+    private Situacao situacao;
 }

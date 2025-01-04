@@ -69,8 +69,14 @@ public class ContaController {
     @PutMapping("/{id}")
     @Operation(summary = "Atualiza uma conta")
     @ApiResponse(responseCode = "200", description = "Conta atualizada com sucesso")
-    public ResponseEntity<Conta> atualizarConta(@PathVariable Long id, @RequestBody @Valid Conta contaAtualizada) {
-        Conta conta = contaService.atualizarConta(id, contaAtualizada);
+    public ResponseEntity<Conta> atualizarConta(@PathVariable Long id, @RequestBody @Valid ContaDTO contaDTO) {
+        Conta contaAtualizada =  new Conta();
+        contaAtualizada.setDataPagamento(contaDTO.getDataPagamento());
+        contaAtualizada.setDataVencimento(contaDTO.getDataVencimento());
+        contaAtualizada.setDescricao(contaDTO.getDescricao());
+        contaAtualizada.setSituacao(contaDTO.getSituacao());
+        contaAtualizada.setValor(contaDTO.getValor());
+    	Conta conta = contaService.atualizarConta(id, contaAtualizada);
         return ResponseEntity.ok(conta);
     }
 
