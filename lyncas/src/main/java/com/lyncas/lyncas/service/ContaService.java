@@ -105,13 +105,15 @@ public class ContaService {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String linha;
             while ((linha = br.readLine()) != null) {
+                // Remover BOM e espaços extras no início da linha
+                linha = linha.replace("\uFEFF", "").trim();  // Remove BOM (U+FEFF) e espaços
+
                 String[] dados = linha.split(",");
                 Conta conta = new Conta();
                 conta.setDataVencimento(LocalDate.parse(dados[0]));
                 conta.setValor(Double.parseDouble(dados[1]));
                 conta.setDescricao(dados[2]);
                 conta.setSituacao(Situacao.valueOf(dados[3].toUpperCase()));
-                // Usando o merge para garantir que a conta seja gerenciada corretamente
                 contas.add(conta);
             }
             contaRepository.saveAll(contas); // Salvar as contas todas de uma vez

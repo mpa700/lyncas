@@ -10,9 +10,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 public class SecurityConfig {
 
     // Define o PasswordEncoder
@@ -36,19 +38,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     	http.csrf().disable()
-            .authorizeRequests()
-            .requestMatchers(
-                    "/v3/api-docs/**", 
-                    "/swagger-ui/**", 
-                    "/swagger-ui.html",
-                    "/api/contas/**"
-                ).permitAll()
-            	.requestMatchers("/api/").permitAll()
-                .anyRequest().authenticated();
-        return http.build();
+        .authorizeRequests()
+        .requestMatchers(
+                "/v3/api-docs/**", 
+                "/swagger-ui/**", 
+                "/swagger-ui.html",
+                "/api/contas/**",
+                "/api/contas/importar"  // Permitir o endpoint de importação
+            ).permitAll()
+        .anyRequest().authenticated();
+    return http.build();
     }
-    
-    
-    
-
 }

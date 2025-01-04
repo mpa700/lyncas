@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +31,8 @@ import com.lyncas.lyncas.service.ContaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
@@ -116,18 +113,25 @@ public class ContaController {
         return ResponseEntity.ok(conta);
     }
     
-    @PostMapping("/importar")
+    @PostMapping(value = "/importar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(
         summary = "Importa contas a pagar a partir de um arquivo CSV",
+        description = "Este endpoint permite a importação de contas a pagar a partir de um arquivo CSV contendo os dados das contas.",
         requestBody = @RequestBody(
             content = @Content(
-                mediaType = "multipart/form-data",
+                mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                 schema = @Schema(type = "string", format = "binary")
             )
         )
     )
     @ApiResponse(responseCode = "200", description = "Contas importadas com sucesso")
-    public ResponseEntity<String> importarContas(@RequestParam("file") MultipartFile file) {
+    @ApiResponse(responseCode = "400", description = "Arquivo inválido")
+    public ResponseEntity<String> importarContas(@RequestPart("file") MultipartFile file) {
+        System.out.println("Nome do arquivo: " + file.getOriginalFilename());
+        System.out.println("Tamanho do arquivo: " + file.getSize());
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Nenhum arquivo foi enviado");
+        }
         contaService.importarContas(file);
         return ResponseEntity.ok("Importação realizada com sucesso");
     }

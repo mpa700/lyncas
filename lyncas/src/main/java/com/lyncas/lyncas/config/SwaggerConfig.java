@@ -20,7 +20,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("API de Contas yha Pagar").version("1.0").description("Documentação da API"))
+                .info(new Info().title("API de Contas ha Pagar").version("1.033").description("Documentação da API"))
                 .servers(List.of(new Server().url("http://localhost:8080")));
     }
     
